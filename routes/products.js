@@ -32,9 +32,51 @@ router.post('/', async(req, res) => {
 
 //Route 3: Display all product using get
 router.get('/', async(req, res) => {
+        try {
+            const products = await Product.find({}) //get all data from database
+            res.render('products/index', { products: products })
+        } catch (error) {
+            res.status(500).send('Something went wrong')
+        }
+    })
+    //Route 4: Display single product using get
+router.get('/:id', async(req, res) => {
+        try {
+            const product = await Product.findById(req.params.id) //get the id by req parem to get only id
+            res.render('products/show-detail', { product: product })
+        } catch (error) {
+            res.status(500).send('Something went wrong')
+        }
+    })
+    // -------------
+    // Update 
+    // -------------
+
+//Route 5: Display the form for modify the products using get
+router.get('/:id/edit', async(req, res) => {
     try {
-        const products = await Product.find({}) //get all data from database
-        res.render('products/index', { products: products })
+        const product = await Product.findById(req.params.id) //get the id by req parem to get only id
+        res.render('products/edit-product', { product: product })
+    } catch (error) {
+        res.status(500).send('Something went wrong')
+    }
+})
+
+//Route 6: get the data from form then update using put
+router.put('/:id', async(req, res) => {
+    try {
+        await Product.findByIdAndUpdate(req.params.id, req.body) //get the id by req parem to get only id
+        res.redirect(`/products/${req.params.id}`)
+    } catch (error) {
+        res.status(500).send('Something went wrong')
+    }
+})
+
+//Route 7: Delete the product using delete
+router.delete('/:id', async(req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id) //get the id by req parem to get only id
+        res.redirect('/products')
     } catch (error) {
         res.status(500).send('Something went wrong')
     }

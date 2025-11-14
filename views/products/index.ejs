@@ -15,7 +15,12 @@
             <li>
                 <%= product.name %>:
                     <%= product.price %> THB
-
+                        <a href="/products/<%= product._id%>">View</a>
+                        <a href="/products/<%= product._id%>/edit">Edit</a>
+                        <form action="/products/<%= product._id %>?_method=DELETE" method="POST" style="display: inline;">
+                            </style>
+                            <button type="submit"> Delete</button>
+                        </form>
             </li>
             <%  })%>
     </ul>
