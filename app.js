@@ -6,10 +6,12 @@ const mongoose = require('mongoose')
 const methodOverride = require('method-override')
 require('dotenv').config()
 
+
+// Router
 const usersRouter = require('./routes/users.js')
 const productRouter = require('./routes/products.js')
-
-//Database Connection
+const apiProductRouter = require('./routes/api/products.js')
+    //Database Connection
 mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log('MongoDB connected successfully'))
     .catch(err => console.error('MongoDB connection error: ', err))
@@ -19,6 +21,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.static(path.join(__dirname, 'public'))) //able to access the directory of the project
 
 //Additional middleweare for CRUD operation
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
@@ -31,8 +34,10 @@ const loggerMiddleware = (req, res, next) => {
 
 app.use(loggerMiddleware)
 
+//Use routers
 app.use('/users', usersRouter)
 app.use('/products', productRouter)
+app.use('/api/products', apiProductRouter)
 
 app.get('/', (req, res) => {
     res.render('index', {
