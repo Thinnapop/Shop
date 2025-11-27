@@ -1,25 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('../partials/header.ejs') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Products</title>
-</head>
-
-<body>
-    <h1>Create a new Product</h1>
-    <form action="/products" method="POST">
-        <div>
-            <label for="name">Product Name: </label>
-            <input type="text" name="name" required>
+    <body>
+        <h1 class="display-5 mb-4">Create a new Product</h1>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form action="/products" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name">Product Name: </label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name">Price </label>
+                        <input type="number" name="price" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="productImage">Product Image: </label>
+                        <input type="file" name="productImage" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="/products" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
         </div>
-        <div>
-            <label for="name">Price </label>
-            <input type="number" name="price" required>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
-</body>
 
-</html>
+
+    </body>
+    <%- include('../partials/footer.ejs') %>

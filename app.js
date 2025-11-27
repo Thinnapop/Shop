@@ -5,12 +5,14 @@ const path = require('path')
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
 require('dotenv').config()
+const cookieParser = require('cookie-parser')
 
 
 // Router
 const usersRouter = require('./routes/users.js')
 const productRouter = require('./routes/products.js')
 const apiProductRouter = require('./routes/api/products.js')
+const authRouter = require('./routes/auth.js')
     //Database Connection
 mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log('MongoDB connected successfully'))
@@ -19,8 +21,10 @@ mongoose.connect(process.env.MONGO_URL)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 app.use(express.static(path.join(__dirname, 'public'))) //able to access the directory of the project
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 //Additional middleweare for CRUD operation
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
@@ -38,6 +42,7 @@ app.use(loggerMiddleware)
 app.use('/users', usersRouter)
 app.use('/products', productRouter)
 app.use('/api/products', apiProductRouter)
+app.use('/auth', authRouter)
 
 app.get('/', (req, res) => {
     res.render('index', {

@@ -1,23 +1,29 @@
 const express = require('express')
 const router = express.Router()
 const Product = require('../module/Product')
+const upload = require('../middleware/uploads')
+const auth = require('../middleware/auth')
 
-// -------------
-// Create
-// -------------
-//Route 1: display form for create new product (using get method)
+router.use(auth)
+    // -------------
+    // Create
+    // -------------
+    //Route 1: display form for create new product (using get method)
 router.get('/new', (req, res) => {
     res.render('products/new-products')
 })
 
 //Route 2 : receive the infomation then create the new product (POST)
-router.post('/', async(req, res) => {
+router.post('/', upload.single('productImage'), async(req, res) => {
     try {
         const newProduct = new Product({
             name: req.body.name,
             price: req.body.price,
 
         })
+        if (req.file) {
+            newProduct.imageUrl = `uploads/${req.file.filename}`
+        }
         await newProduct.save() // save in database
         res.redirect('/products') //go back to product page
     } catch (error) {
@@ -26,9 +32,9 @@ router.post('/', async(req, res) => {
     }
 })
 
-// -------------
+// ---------------------
 // Read 
-// -------------
+// ---------------------
 
 //Route 3: Display all product using get
 router.get('/', async(req, res) => {
@@ -63,9 +69,15 @@ router.get('/:id/edit', async(req, res) => {
 })
 
 //Route 6: get the data from form then update using put
-router.put('/:id', async(req, res) => {
+router.put('/:id', upload.single('productImage'), async(req, res) => {
     try {
-        await Product.findByIdAndUpdate(req.params.id, req.body) //get the id by req parem to get only id
+        const updateData = {...req.body }
+
+        if (req.file) {
+            updateData.imageUrl = `uploads/${req.file.filename}`
+        }
+
+        await Product.findByIdAndUpdate(req.params.id, updateData) //get the id by req parem to get only id
         res.redirect(`/products/${req.params.id}`)
     } catch (error) {
         res.status(500).send('Something went wrong')
