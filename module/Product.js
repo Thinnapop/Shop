@@ -19,8 +19,12 @@ const productSchema = new Schema({
     imageUrl: {
         type: String,
         required: false
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User' //tell mongoose that this id refer to specific user(like this id belong to user ...)
     }
-
 }, { timestamps: true })
 
 

@@ -4,6 +4,8 @@ const port = 3000
 const path = require('path')
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
+const session = require('express-session')
+const flash = require('connect-flash')
 require('dotenv').config()
 const cookieParser = require('cookie-parser')
 
@@ -28,6 +30,20 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+app.use(session({
+    secret: 'process.env.SESSION_SECRET',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 5000 } //duration 1min
+}))
+app.use(flash())
+
+app.use((req, res, next) => { //make it golbal to be able to use it every pages
+    res.locals.success_msg = req.flash('success_msg') //store the flash message in locals
+    res.locals.error_msg = req.flash('error_msg')
+    res.locals.user = req.user || null
+    next()
+})
 
 //Middleware for collect the data
 const loggerMiddleware = (req, res, next) => {
